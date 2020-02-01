@@ -18,6 +18,9 @@ __version__ = "0.1"
 _LOGGER = logging.getLogger(__name__)
 _RESOURCE = "api.9292.nl"
 
+_ONTIME = "onetime"
+_LATE = "late"
+
 CONF_CREDITS = "Data provided by api.9292.nl"
 CONF_DATE_FORMAT = "date_format"
 CONF_DESTINATION = "destination"
@@ -153,8 +156,11 @@ class OvApiSensor(Entity):
                 self._station_name = data['tabs'][0]['locations'][0]['name']
                 self._transport_type = data['tabs'][0]['name']
                 self._departure = item['time']
-                self._delay = item['realtimeText']
-                self._state = item['time']
+                self._delay = int(''.join(filter(str.isdigit, item['realtimeText'])))
+                if item['realtimeText'] == _LATE:
+                    self._state = f"{item['time']} + {self._delay}"
+                else:
+                    self._state = item['time']
 
 
 class OvApiData:
