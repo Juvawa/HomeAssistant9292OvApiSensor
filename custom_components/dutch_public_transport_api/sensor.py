@@ -9,6 +9,7 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import (CONF_NAME, STATE_UNKNOWN)
 from homeassistant.exceptions import PlatformNotReady
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 
