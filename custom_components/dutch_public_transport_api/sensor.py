@@ -143,7 +143,7 @@ class OvApiSensor(Entity):
             departures = [
                 departure
                 for departure in data['tabs'][0]['departures']
-                if departure['destinationName'] == CONF_DESTINATION
+                if departure['destinationName'] == self._destination
             ]
             if self._sensor_number >= len(departures):
                 self._departure = STATE_UNKNOWN
@@ -151,11 +151,11 @@ class OvApiSensor(Entity):
                 self._state = STATE_UNKNOWN
             else:
                 item = departures[self._sensor_number]
-                self._station_name = data['tabs'][0]['locations'][0].name
-                self._transport_type = data['tabs'][0].name
-                self._departure = item.time
-                self._delay = item.realtimeText
-                self._state = item.time
+                self._station_name = data['tabs'][0]['locations'][0]['name']
+                self._transport_type = data['tabs'][0]['name']
+                self._departure = item['time']
+                self._delay = item['realtimeText']
+                self._state = item['time']
 
 
 class OvApiData:
