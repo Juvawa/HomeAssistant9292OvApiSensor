@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta
 import logging
 import http.client
@@ -28,6 +29,7 @@ DEFAULT_NAME = '9292OV'
 DEFAULT_DATE_FORMAT = "%y-%m-%dT%H:%M:%S"
 DEFAULT_SHOW_FUTURE_DEPARTURES = 0
 
+ATTR_STOP_NAME = 'stop_name'
 ATTR_LOCATION = 'location'
 ATTR_DESTINATION = 'destination'
 ATTR_TRANSPORT_TYPE = 'transport_type'
@@ -35,6 +37,7 @@ ATTR_DEPARTURE = 'departure'
 ATTR_DELAY = 'delay'
 ATTR_UPDATE_CYCLE = 'update_cycle'
 ATTR_CREDITS = 'credits'
+ATTR_NAME = 'name'
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=60)
 
@@ -112,7 +115,6 @@ class OvApiSensor(Entity):
         return {
             ATTR_NAME: self._name,
             ATTR_DESTINATION: self._destination,
-            ATTR_SENSOR_NUMBER: self._sensor_number,
             ATTR_TRANSPORT_TYPE: self._transport_type,
             ATTR_STOP_NAME: self._stop_name,
             ATTR_DEPARTURE: self._departure,
