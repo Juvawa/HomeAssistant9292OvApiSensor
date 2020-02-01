@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
 import logging
 import http.client
 import json
@@ -157,8 +157,10 @@ class OvApiSensor(Entity):
                 self._departure = item['time']
                 self._delay = item['realtimeText']
                 if item['realtimeState'] == _LATE:
+                    departure_time = datetime.strptime(item['time'], '%H:%M')
                     delay_digit = int(''.join(filter(str.isdigit, self._delay)))
-                    self._state = f"{item['time']} + {delay_digit}"
+                    result_delay = (departure_time + timedelta(minutes=delay_digit)).strftime('%H:%M')
+                    self._state = result_delay
                 else:
                     self._state = item['time']
 
