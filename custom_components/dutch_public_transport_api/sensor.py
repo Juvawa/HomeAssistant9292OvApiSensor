@@ -156,9 +156,10 @@ class OvApiSensor(Entity):
                 self._station_name = data['tabs'][0]['locations'][0]['name']
                 self._transport_type = data['tabs'][0]['name']
                 self._departure = item['time']
-                self._delay = int(''.join(filter(str.isdigit, item['realtimeText'])))
-                if item['realtimeText'] == _LATE:
-                    self._state = f"{item['time']} + {self._delay}"
+                self._delay = item['realtimeText']
+                if self._delay == _LATE:
+                    delay_digit = int(''.join(filter(str.isdigit, self._delay)))
+                    self._state = f"{item['time']} + {delay_digit}"
                 else:
                     self._state = item['time']
 
