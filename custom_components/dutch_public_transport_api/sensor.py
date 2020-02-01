@@ -18,7 +18,6 @@ __version__ = "0.1"
 _LOGGER = logging.getLogger(__name__)
 _RESOURCE = "api.9292.nl"
 
-_ONTIME = "onetime"
 _LATE = "late"
 
 CONF_CREDITS = "Data provided by api.9292.nl"
@@ -157,7 +156,7 @@ class OvApiSensor(Entity):
                 self._transport_type = data['tabs'][0]['name']
                 self._departure = item['time']
                 self._delay = item['realtimeText']
-                if self._delay == _LATE:
+                if item['realtimeState'] == _LATE:
                     delay_digit = int(''.join(filter(str.isdigit, self._delay)))
                     self._state = f"{item['time']} + {delay_digit}"
                 else:
