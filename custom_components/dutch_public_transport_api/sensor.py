@@ -1,7 +1,8 @@
-import json
 from datetime import timedelta
 import logging
 import http.client
+import json
+import re
 
 import voluptuous as vol
 
@@ -17,49 +18,47 @@ __version__ = "0.1"
 _LOGGER = logging.getLogger(__name__)
 _RESOURCE = "api.9292.nl"
 
-CONF_NAME = "name"
-CONF_LOCATION = "location"
-CONF_DESTINATION = "destination"
-CONF_SHOW_FUTURE_DEPARTURES = "show_future_departures"
-CONF_DATE_FORMAT = "date_format"
 CONF_CREDITS = "Data provided by api.9292.nl"
+CONF_DATE_FORMAT = "date_format"
+CONF_DESTINATION = "destination"
+CONF_STATION = "station"
+CONF_NAME = "name"
+CONF_SHOW_FUTURE_DEPARTURES = "show_future_departures"
 
-DEFAULT_NAME = "9292OV"
-DEFAULT_DATE_FORMAT = "%y-%m-%dT%H:%M:%S"
+DEFAULT_NAME = "9292OV API"
 DEFAULT_SHOW_FUTURE_DEPARTURES = 0
 
-ATTR_STOP_NAME = "stop_name"
-ATTR_LOCATION = "location"
-ATTR_DESTINATION = "destination"
-ATTR_TRANSPORT_TYPE = "transport_type"
-ATTR_DEPARTURE = "departure"
-ATTR_DELAY = "delay"
-ATTR_UPDATE_CYCLE = "update_cycle"
 ATTR_CREDITS = "credits"
+ATTR_DELAY = "delay"
+ATTR_DEPARTURE = "departure"
+ATTR_DESTINATION = "destination"
+ATTR_STATION = "station"
 ATTR_NAME = "name"
+ATTR_STOP_NAME = "stop_name"
+ATTR_TRANSPORT_TYPE = "transport_type"
+ATTR_UPDATE_CYCLE = "update_cycle"
 
 MIN_TIME_BETWEEN_UPDATES = timedelta(seconds=60)
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
-        vol.Required(CONF_LOCATION, default=CONF_LOCATION): cv.string,
+        vol.Required(CONF_STATION, default=CONF_STATION): cv.string,
         vol.Required(CONF_DESTINATION, default=CONF_DESTINATION): cv.string,
         vol.Optional(
             CONF_SHOW_FUTURE_DEPARTURES, default=DEFAULT_SHOW_FUTURE_DEPARTURES
         ): cv.positive_int,
-        vol.Optional(CONF_DATE_FORMAT, default=DEFAULT_DATE_FORMAT): cv.string,
     }
 )
 
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     name = config.get(CONF_NAME)
-    location = config.get(CONF_LOCATION)
     destination = config.get(CONF_DESTINATION)
     future_departures = config.get(CONF_SHOW_FUTURE_DEPARTURES)
+    station = config.get(CONF_STATION)
 
-    ov_api = OvApiData(location)
+    ov_api = OvApiData(station)
 
     ov_api.update()
 
@@ -143,7 +142,7 @@ class OvApiSensor(Entity):
             departures = [
                 departure
                 for departure in data['tabs'][0]['departures']
-                if departure['destinationName'] == self._destination
+                if departure['destinationName'].lower() == self._destination.lower()
             ]
             if self._sensor_number >= len(departures):
                 self._departure = STATE_UNKNOWN
@@ -159,15 +158,15 @@ class OvApiSensor(Entity):
 
 
 class OvApiData:
-    def __init__(self, location):
+    def __init__(self, station):
         self._resource = _RESOURCE
-        self._location = location
+        self.station = station
         self.result = ""
         self._headers = {"cache-control": "no-cache", "accept": "application/json"}
 
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
-        if self._location == CONF_LOCATION:
+        if self.station.lower() == CONF_STATION.lower():
             _LOGGER.error("Impossible to get data from 9292OV Api, no location.")
             self.result = "Impossible to get data from 9292OV Api, no location."
         else:
@@ -175,7 +174,7 @@ class OvApiData:
                 response = http.client.HTTPConnection(self._resource, timeout=1)
                 response.request(
                     "GET",
-                    "/0.1/locations/" + self._location + "/departure-times?lang=nl-NL",
+                    "/0.1/locations/" + self.station + "/departure-times?lang=nl-NL",
                     headers=self._headers,
                 )
                 result = response.getresponse()
