@@ -10,7 +10,6 @@ import homeassistant.helpers.config_validation as cv
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import (CONF_NAME, STATE_UNKNOWN)
 from homeassistant.exceptions import PlatformNotReady
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 
@@ -29,7 +28,6 @@ DEFAULT_NAME = '9292OV'
 DEFAULT_DATE_FORMAT = "%y-%m-%dT%H:%M:%S"
 DEFAULT_SHOW_FUTURE_DEPARTURES = 0
 
-ATTR_STOP_NAME = 'stop_name'
 ATTR_LOCATION = 'location'
 ATTR_DESTINATION = 'destination'
 ATTR_TRANSPORT_TYPE = 'transport_type'
@@ -116,7 +114,6 @@ class OvApiSensor(Entity):
             ATTR_NAME: self._name,
             ATTR_DESTINATION: self._destination,
             ATTR_TRANSPORT_TYPE: self._transport_type,
-            ATTR_STOP_NAME: self._stop_name,
             ATTR_DEPARTURE: self._departure,
             ATTR_DELAY: self._delay,
             ATTR_UPDATE_CYCLE: str(MIN_TIME_BETWEEN_UPDATES.seconds) + ' seconds',
