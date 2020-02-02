@@ -1,10 +1,10 @@
 {
     "sensor.ovapi": {
-      "updated_at": "2019-05-18",
-      "version": "1.4.2",
-      "local_location": "/custom_components/ovapi/sensor.py",
-      "remote_location": "https://raw.githubusercontent.com/Paul-dH/Home-Assisant-Sensor-OvApi/master/custom_components/ovapi/sensor.py",
-      "visit_repo": "https://github.com/Paul-dH/Home-Assisant-Sensor-OvApi",
-      "changelog": "https://github.com/Paul-dH/Home-Assisant-Sensor-OvApi"
+      "updated_at": "2020-02-02",
+      "version": "0.9.0",
+      "local_location": "/custom_components/dutch_public_transport_api/sensor.py",
+      "remote_location": "https://github.com/Juvawa/HomeAssistant9292OvApiSensor/master/custom_components/dutch_public_transport_api/sensor.py",
+      "visit_repo": "https://github.com/Juvawa/HomeAssistant9292OvApiSensor",
+      "changelog": "https://github.com/Juvawa/HomeAssistant9292OvApiSensor"
   }
 }
