@@ -6,4 +6,4 @@ This sensor is based on the following sensor: https://github.com/Paul-dH/Home-As
 
 ### Credits:
 - [Paul-Dh](https://github.com/Paul-dH) This sensor is based on the sensor of Paul.
-- [Thomas Brus](https://github.com/thomasbrus/9292-api-spec) Thanks for reverse engineering the 9292OV Api, was very useful for this sensor.
+- [Thomas Brus](https://github.com/thomasbrus/9292-api-spec) Thanks for figuring the 9292OV Api out, was very useful for this sensor.
