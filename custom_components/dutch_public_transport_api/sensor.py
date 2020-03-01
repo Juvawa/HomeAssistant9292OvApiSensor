@@ -66,16 +66,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         raise PlatformNotReady
 
     sensors = []
-
-    for counter in range(future_departures + 1):
-        if counter == 0:
-            sensors.append(OvApiSensor(ov_api, name, destination, counter))
-        else:
-            sensors.append(
-                OvApiSensor(
-                    ov_api, name + "_future_" + str(counter), destination, counter
-                )
-            )
+    for i in range(future_departures + 1):
+        _name = name if i == 0 else f"{name}_future_{i}"
+        sensors.append(OvApiSensor(ov_api, _name, destination, i))
 
     add_entities(sensors, True)
 
