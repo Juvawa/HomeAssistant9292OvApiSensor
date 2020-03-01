@@ -119,6 +119,9 @@ class OvApiSensor(Entity):
             ATTR_CREDITS: CONF_CREDITS,
         }
 
+    def _select_route(self, departure):
+        return departure["destinationName"].lower() == self._destination.lower()
+
     def update(self):
         """Get the latest data from the 9292OV Api."""
         self._json_data.update()
@@ -133,7 +136,7 @@ class OvApiSensor(Entity):
             departures = [
                 departure
                 for departure in data["tabs"][0]["departures"]
-                if departure["destinationName"].lower() == self._destination.lower()
+                if self._select_route(departure)
             ]
             if self._sensor_number >= len(departures):
                 self._departure = STATE_UNKNOWN
