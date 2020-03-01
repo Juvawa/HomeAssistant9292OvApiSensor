@@ -1,13 +1,11 @@
-from datetime import timedelta, datetime
-import logging
 import http.client
 import json
+import logging
 import re
-
-import voluptuous as vol
+from datetime import datetime, timedelta
 
 import homeassistant.helpers.config_validation as cv
-
+import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME, STATE_UNKNOWN
 from homeassistant.exceptions import PlatformNotReady
@@ -143,8 +141,8 @@ class OvApiSensor(Entity):
         else:
             departures = [
                 departure
-                for departure in data['tabs'][0]['departures']
-                if departure['destinationName'].lower() == self._destination.lower()
+                for departure in data["tabs"][0]["departures"]
+                if departure["destinationName"].lower() == self._destination.lower()
             ]
             if self._sensor_number >= len(departures):
                 self._departure = STATE_UNKNOWN
@@ -152,17 +150,19 @@ class OvApiSensor(Entity):
                 self._state = STATE_UNKNOWN
             else:
                 item = departures[self._sensor_number]
-                self._station_name = data['tabs'][0]['locations'][0]['name']
-                self._transport_type = data['tabs'][0]['name']
-                self._departure = item['time']
-                self._delay = item['realtimeText']
-                if item['realtimeState'] == _LATE:
-                    departure_time = datetime.strptime(item['time'], '%H:%M')
-                    delay_digit = int(''.join(filter(str.isdigit, self._delay)))
-                    result_delay = (departure_time + timedelta(minutes=delay_digit)).strftime('%H:%M')
+                self._station_name = data["tabs"][0]["locations"][0]["name"]
+                self._transport_type = data["tabs"][0]["name"]
+                self._departure = item["time"]
+                self._delay = item["realtimeText"]
+                if item["realtimeState"] == _LATE:
+                    departure_time = datetime.strptime(item["time"], "%H:%M")
+                    delay_digit = int("".join(filter(str.isdigit, self._delay)))
+                    result_delay = (
+                        departure_time + timedelta(minutes=delay_digit)
+                    ).strftime("%H:%M")
                     self._state = result_delay
                 else:
-                    self._state = item['time']
+                    self._state = item["time"]
 
 
 class OvApiData:
