@@ -1,7 +1,6 @@
 import http.client
 import json
 import logging
-import re
 from datetime import datetime, timedelta
 
 import homeassistant.helpers.config_validation as cv
@@ -22,7 +21,6 @@ CONF_CREDITS = "Data provided by api.9292.nl"
 CONF_DATE_FORMAT = "date_format"
 CONF_DESTINATION = "destination"
 CONF_STATION = "station"
-CONF_NAME = "name"
 CONF_SHOW_FUTURE_DEPARTURES = "show_future_departures"
 
 DEFAULT_NAME = "9292OV API"
@@ -168,18 +166,18 @@ class OvApiData:
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
         if self.station.lower() == CONF_STATION.lower():
-            _LOGGER.error("Impossible to get data from 9292OV Api, no location.")
             self.result = "Impossible to get data from 9292OV Api, no location."
+            _LOGGER.error(self.result)
         else:
             try:
                 response = http.client.HTTPConnection(self._resource, timeout=1)
                 response.request(
                     "GET",
-                    "/0.1/locations/" + self.station + "/departure-times?lang=nl-NL",
+                    f"/0.1/locations/{self.station}/departure-times?lang=nl-NL",
                     headers=self._headers,
                 )
                 result = response.getresponse()
                 self.result = result.read().decode("utf-8")
             except http.client.HTTPException:
-                _LOGGER.error("Impossible to get data from 929OV Api using location.")
                 self.result = "Impossible to get data from 929OV Api using location."
+                _LOGGER.error(self.result)
