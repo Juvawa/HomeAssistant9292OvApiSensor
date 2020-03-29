@@ -42,7 +42,7 @@ Host: api.9292.nl
 ```
 [Example response](http://api.9292.nl/0.1/locations/station-amsterdam-centraal/departure-times?lang=nl-NL)
 
-####Show_future_departures
+#### Show_future_departures
 Number of future departures that should be shown, every future departure is a new sensor.
 
 

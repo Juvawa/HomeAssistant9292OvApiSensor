@@ -1,13 +1,10 @@
-from datetime import timedelta, datetime
-import logging
 import http.client
 import json
-import re
-
-import voluptuous as vol
+import logging
+from datetime import datetime, timedelta
 
 import homeassistant.helpers.config_validation as cv
-
+import voluptuous as vol
 from homeassistant.components.sensor import PLATFORM_SCHEMA
 from homeassistant.const import CONF_NAME, STATE_UNKNOWN
 from homeassistant.exceptions import PlatformNotReady
@@ -24,7 +21,6 @@ CONF_CREDITS = "Data provided by api.9292.nl"
 CONF_DATE_FORMAT = "date_format"
 CONF_DESTINATION = "destination"
 CONF_STATION = "station"
-CONF_NAME = "name"
 CONF_SHOW_FUTURE_DEPARTURES = "show_future_departures"
 
 DEFAULT_NAME = "9292OV API"
@@ -68,16 +64,9 @@ def setup_platform(hass, config, add_entities, discovery_info=None):
         raise PlatformNotReady
 
     sensors = []
-
-    for counter in range(future_departures + 1):
-        if counter == 0:
-            sensors.append(OvApiSensor(ov_api, name, destination, counter))
-        else:
-            sensors.append(
-                OvApiSensor(
-                    ov_api, name + "_future_" + str(counter), destination, counter
-                )
-            )
+    for i in range(future_departures + 1):
+        _name = name if i == 0 else f"{name}_future_{i}"
+        sensors.append(OvApiSensor(ov_api, _name, destination, i))
 
     add_entities(sensors, True)
 
@@ -130,6 +119,9 @@ class OvApiSensor(Entity):
             ATTR_CREDITS: CONF_CREDITS,
         }
 
+    def _select_route(self, departure):
+        return departure["destinationName"].lower() == self._destination.lower()
+
     def update(self):
         """Get the latest data from the 9292OV Api."""
         self._json_data.update()
@@ -143,8 +135,8 @@ class OvApiSensor(Entity):
         else:
             departures = [
                 departure
-                for departure in data['tabs'][0]['departures']
-                if departure['destinationName'].lower() == self._destination.lower()
+                for departure in data["tabs"][0]["departures"]
+                if self._select_route(departure)
             ]
             if self._sensor_number >= len(departures):
                 self._departure = STATE_UNKNOWN
@@ -152,17 +144,19 @@ class OvApiSensor(Entity):
                 self._state = STATE_UNKNOWN
             else:
                 item = departures[self._sensor_number]
-                self._station_name = data['tabs'][0]['locations'][0]['name']
-                self._transport_type = data['tabs'][0]['name']
-                self._departure = item['time']
-                self._delay = item['realtimeText']
-                if item['realtimeState'] == _LATE:
-                    departure_time = datetime.strptime(item['time'], '%H:%M')
-                    delay_digit = int(''.join(filter(str.isdigit, self._delay)))
-                    result_delay = (departure_time + timedelta(minutes=delay_digit)).strftime('%H:%M')
+                self._station_name = data["tabs"][0]["locations"][0]["name"]
+                self._transport_type = data["tabs"][0]["name"]
+                self._departure = item["time"]
+                self._delay = item["realtimeText"]
+                if item["realtimeState"] == _LATE:
+                    departure_time = datetime.strptime(item["time"], "%H:%M")
+                    delay_digit = int("".join(filter(str.isdigit, self._delay)))
+                    result_delay = (
+                        departure_time + timedelta(minutes=delay_digit)
+                    ).strftime("%H:%M")
                     self._state = result_delay
                 else:
-                    self._state = item['time']
+                    self._state = item["time"]
 
 
 class OvApiData:
@@ -175,18 +169,18 @@ class OvApiData:
     @Throttle(MIN_TIME_BETWEEN_UPDATES)
     def update(self):
         if self.station.lower() == CONF_STATION.lower():
-            _LOGGER.error("Impossible to get data from 9292OV Api, no location.")
             self.result = "Impossible to get data from 9292OV Api, no location."
+            _LOGGER.error(self.result)
         else:
             try:
                 response = http.client.HTTPConnection(self._resource, timeout=1)
                 response.request(
                     "GET",
-                    "/0.1/locations/" + self.station + "/departure-times?lang=nl-NL",
+                    f"/0.1/locations/{self.station}/departure-times?lang=nl-NL",
                     headers=self._headers,
                 )
                 result = response.getresponse()
                 self.result = result.read().decode("utf-8")
             except http.client.HTTPException:
-                _LOGGER.error("Impossible to get data from 929OV Api using location.")
                 self.result = "Impossible to get data from 929OV Api using location."
+                _LOGGER.error(self.result)
