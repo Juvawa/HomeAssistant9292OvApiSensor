@@ -30,6 +30,7 @@ ATTR_CREDITS = "credits"
 ATTR_DELAY = "delay"
 ATTR_DEPARTURE = "departure"
 ATTR_DESTINATION = "destination"
+ATTR_ICON = "icon"
 ATTR_STATION = "station"
 ATTR_NAME = "name"
 ATTR_STOP_NAME = "stop_name"
@@ -75,6 +76,7 @@ class OvApiSensor(Entity):
     def __init__(self, ov_api, name, destination, counter):
         self._json_data = ov_api
         self._name = name
+        self._icon = None
         self._destination = destination
         self._sensor_number = counter
         self._station_name = None
@@ -86,6 +88,10 @@ class OvApiSensor(Entity):
     @property
     def name(self):
         return self._name
+
+    @property
+    def icon(self):
+        return self._icon
 
     @property
     def station_name(self):
@@ -111,6 +117,7 @@ class OvApiSensor(Entity):
     def device_state_attributes(self):
         return {
             ATTR_NAME: self._name,
+            ATTR_ICON: self._icon,
             ATTR_DESTINATION: self._destination,
             ATTR_TRANSPORT_TYPE: self._transport_type,
             ATTR_DEPARTURE: self._departure,
@@ -157,6 +164,17 @@ class OvApiSensor(Entity):
                     self._state = result_delay
                 else:
                     self._state = item["time"]
+
+            if self._transport_type == "Trein":
+                self._icon = "mdi:train-variant"
+            elif self._transport_type == "Metro":
+                self._icon = "mdi:subway-variant"
+            elif self._transport_type == "Tram":
+                self._icon = "mdi:tram"
+            elif self._transport_type == "Bus":
+                self._icon = "mdi:bus"
+            else:
+                self._icon = "mdi:timetable"
 
 
 class OvApiData:
