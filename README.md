@@ -1,27 +1,29 @@
 # HomeAssistant9292OvApiSensor
 
-First setup for a Home Assistant sensor using the 9292Ov Api for dutch public transport companies.
+A Home Assistant sensor using the 9292Ov Api for Dutch public transport companies.
 
-## How to install?
+## Installation
 
 Create ```<config_directory>/custom_components/dutch_public_transport_api/``` and copy [these](https://github.com/Juvawa/HomeAssistant9292OvApiSensor/tree/master/custom_components/dutch_public_transport_api) files into the directory.
+
+## Configuration
 
 Example config:
 
 ```yaml
 sensor:
   - platform: dutch_public_transport_api
-    name: Amsterdam naar Vlissingen                     (required)
-    station: station-amsterdam-centraal                 (required)
-    destination: Vlissingen                             (required)
-    show_future_departures: 2                           (optional)
+    name: Amsterdam naar Vlissingen        # (required)
+    station: station-amsterdam-centraal    # (required)
+    destination: Vlissingen                # (required)
+    show_future_departures: 2              # (optional)
 ```
 
-### Name
+### name
 
 Name of the sensor
 
-### Station
+### station
 
 The station from where the bus, tram, metro or train should depart.
 This can be found by following querying the 9292Ov API (reference: [Thomas Brus](https://github.com/thomasbrus/9292-api-spec)).
@@ -38,7 +40,7 @@ Host: api.9292.nl
 
 [Example response](http://api.9292.nl/0.1/locations?lang=nl-NL&q=amsterdam)
 
-### Destination
+### destination
 
 The destination is equal to the destination of the bus, tram, metro or train.
 This can be found by following querying the 9292Ov API (reference: [Thomas Brus](https://github.com/thomasbrus/9292-api-spec)).
@@ -54,7 +56,7 @@ Host: api.9292.nl
 
 [Example response](http://api.9292.nl/0.1/locations/station-amsterdam-centraal/departure-times?lang=nl-NL)
 
-### Show_future_departures
+### show_future_departures
 
 Number of future departures that should be shown, every future departure is a new sensor.
 
