@@ -11,7 +11,7 @@ from homeassistant.exceptions import PlatformNotReady
 from homeassistant.helpers.entity import Entity
 from homeassistant.util import Throttle
 
-__version__ = "0.1"
+__version__ = "0.10.0"
 _LOGGER = logging.getLogger(__name__)
 _RESOURCE = "api.9292.nl"
 
