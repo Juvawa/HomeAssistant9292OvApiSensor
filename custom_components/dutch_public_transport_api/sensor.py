@@ -108,7 +108,7 @@ class OvApiSensor(Entity):
         return self._state
 
     @property
-    def device_state_attributes(self):
+    def extra_state_attributes(self):
         return {
             ATTR_NAME: self._name,
             ATTR_DESTINATION: self._destination,
