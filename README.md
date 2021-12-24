@@ -1,5 +1,7 @@
 # HomeAssistant9292OvApiSensor
 
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)][hacs]
+
 A Home Assistant sensor using the 9292Ov Api for Dutch public transport companies.
 
 ## Installation
