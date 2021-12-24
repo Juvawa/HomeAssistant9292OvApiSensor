@@ -1,7 +1,7 @@
 {
     "sensor.ovapi": {
       "updated_at": "2021-12-24",
-      "version": "0.10.0",
+      "version": "0.10.1",
       "local_location": "/custom_components/dutch_public_transport_api/sensor.py",
       "remote_location": "https://github.com/Juvawa/HomeAssistant9292OvApiSensor/master/custom_components/dutch_public_transport_api/sensor.py",
       "visit_repo": "https://github.com/Juvawa/HomeAssistant9292OvApiSensor",
