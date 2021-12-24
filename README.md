@@ -4,6 +4,32 @@ A Home Assistant sensor using the 9292Ov Api for Dutch public transport companie
 
 ## Installation
 
+### HACS installation (preferred)
+
+The easiest way to install the integration is through [HACS][hacs]. 
+
+First, add [this repository][repo] to [HACS][hacs]:
+
+1. Open HACS from the side panel.
+2. Go to any of the sections (integrations, frontend, automation).
+3. Click on the 3 dots in the top right corner.
+4. Select "Custom repositories".
+5. Add the URL to [this repository][repo].
+6. Select "Integrations" as the category.
+7. Click the "ADD" button.
+
+Next, add the integration to your Home Assistant:
+
+1. Open HACS from the side panel.
+2. Go to the sections Integrations.
+3. Click the button "Explore % Download Repositories".
+4. Search for or scroll to "Sensor 9292 OV API".
+5. Select the integration.
+
+Now is the time to add the new platform to your [Configuration](#configuration).
+
+### Manual installation
+
 Create ```<config_directory>/custom_components/dutch_public_transport_api/``` and copy [these](https://github.com/Juvawa/HomeAssistant9292OvApiSensor/tree/master/custom_components/dutch_public_transport_api) files into the directory.
 
 ## Configuration
@@ -64,3 +90,6 @@ Number of future departures that should be shown, every future departure is a ne
 
 - [Paul-Dh](https://github.com/Paul-dH) This sensor is based on the sensor of Paul.
 - [Thomas Brus](https://github.com/thomasbrus/9292-api-spec) Thanks for figuring the 9292OV Api out, was very useful for this sensor.
+
+[repo]: https://github.com/Juvawa/HomeAssistant9292OvApiSensor
+[hacs]: https://hacs.xyz/
