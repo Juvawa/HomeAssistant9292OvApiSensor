@@ -1,0 +1,6 @@
+{
+    "name": "Sensor 9292 OV API",
+    "render_readme": true,
+    "domains": ["sensor"],
+    "country": ["NL"]
+  }
